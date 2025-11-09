@@ -121,14 +121,24 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny'],
 }
 
-# CORS
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-
-# SEGURIDAD EN PRODUCCIÓN (ajustada para Railway)
+# CORS y seguridad
 if not DEBUG:
+    # Permitir solo tu frontend en Netlify
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = [
+        "https://cliente-admin.netlify.app",
+    ]
+    CORS_ALLOW_CREDENTIALS = True
+
+    # Seguridad SSL / CSRF
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-   # SECURE_SSL_REDIRECT = False  # 🚫 evita redirecciones infinitas
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('RAILWAY_DOMAIN', 'cliente-management-production.up.railway.app')}"]
+    CSRF_TRUSTED_ORIGINS = [
+        f"https://{os.environ.get('RAILWAY_DOMAIN', 'cliente-management-production.up.railway.app')}",
+        "https://cliente-admin.netlify.app",
+    ]
+else:
+    # Desarrollo
+    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOW_CREDENTIALS = True
