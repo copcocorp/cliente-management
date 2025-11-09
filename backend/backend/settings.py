@@ -125,10 +125,10 @@ REST_FRAMEWORK = {
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-# SEGURIDAD EN PRODUCCIÓN
+# SEGURIDAD EN PRODUCCIÓN (ajustada para Railway)
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = False  # 🚫 evita redirecciones infinitas
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    # Confianza en el dominio de Railway
     CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('RAILWAY_DOMAIN', 'cliente-management-production.up.railway.app')}"]
