@@ -3,18 +3,23 @@ from pathlib import Path
 import dj_database_url
 import pymysql
 
-# --- PyMySQL para reemplazar mysqlclient ---
+# Hacemos que PyMySQL actúe como MySQLdb
 pymysql.install_as_MySQLdb()
 
-# --- Rutas base ---
+# BASE_DIR
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --- Configuración general ---
+# SECRET_KEY y DEBUG
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-only')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = ['*']
 
-# --- Aplicaciones instaladas ---
+# Solo permitir tu dominio de Railway en producción
+if not DEBUG:
+    ALLOWED_HOSTS = ['tu-proyecto.railway.app']  # Cambia esto por tu dominio real
+else:
+    ALLOWED_HOSTS = ['*']
+
+# INSTALLED APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -25,10 +30,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'clientes',
-    'whitenoise.runserver_nostatic',  # para servir archivos estáticos localmente
+    'whitenoise.runserver_nostatic',
 ]
 
-# --- Middlewares ---
+# MIDDLEWARE
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -43,7 +48,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'backend.urls'
 
-# --- Templates ---
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -62,29 +66,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# --- Base de datos local por defecto ---
+# BASE DE DATOS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME', 'railway'),
+        'NAME': os.environ.get('DB_NAME', 'clientes_db'),
         'USER': os.environ.get('DB_USER', 'root'),
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': os.environ.get('DB_PORT', '3306'),
-        'OPTIONS': {'charset': 'utf8mb4'},
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        }
     }
 }
 
-# --- Si Railway proporciona DATABASE_URL, usarla ---
+# Usar DATABASE_URL de Railway si existe
 if os.environ.get('DATABASE_URL'):
     DATABASES['default'] = dj_database_url.config(
         default=os.environ['DATABASE_URL'],
         conn_max_age=600,
-        conn_health_checks=True,
         ssl_require=True
     )
 
-# --- Validación de contraseñas ---
+# VALIDADORES DE CONTRASEÑA
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -92,31 +97,32 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# --- Configuración regional ---
+# LOCALIZACIÓN
 LANGUAGE_CODE = 'es-es'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# --- Archivos estáticos (para producción y desarrollo) ---
+# STATIC FILES
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# --- Configuración extra ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- Django REST Framework ---
+# REST FRAMEWORK
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny']
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny'],
 }
 
-# --- CORS ---
+# CORS
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-# --- Seguridad en producción ---
+# SEGURIDAD EN PRODUCCIÓN
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    # Evita errores CSRF con el dominio de Railway
+    CSRF_TRUSTED_ORIGINS = ['https://tu-proyecto.railway.app']  # Cambia al dominio real
