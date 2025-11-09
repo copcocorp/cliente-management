@@ -58,7 +58,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # CONFIGURACIÓN MYSQL PARA PRODUCCIÓN
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'mysql.connector.django',
         'NAME': os.environ.get('MYSQLDATABASE', 'railway'),
         'USER': os.environ.get('MYSQLUSER', 'root'),
         'PASSWORD': os.environ.get('MYSQLPASSWORD', ''),
@@ -71,12 +71,20 @@ DATABASES = {
 }
 
 # Si existe DATABASE_URL de Railway, usarla
+# if os.environ.get('DATABASE_URL'):
+#     DATABASES['default'] = dj_database_url.config(
+#         conn_max_age=600,
+#         conn_health_checks=True,
+#         ssl_require=True
+#     )
 if os.environ.get('DATABASE_URL'):
-    DATABASES['default'] = dj_database_url.config(
+    db_config = dj_database_url.config(
         conn_max_age=600,
         conn_health_checks=True,
         ssl_require=True
     )
+    db_config['ENGINE'] = 'mysql.connector.django'
+    DATABASES['default'] = db_config
 
 AUTH_PASSWORD_VALIDATORS = [
     {
