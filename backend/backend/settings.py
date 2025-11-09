@@ -13,13 +13,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-only')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# Solo permitir tu dominio de Railway en producción
+# ALLOWED_HOSTS según entorno
 if not DEBUG:
-    ALLOWED_HOSTS = ['tu-proyecto.railway.app']  # Cambia esto por tu dominio real
+    # Reemplaza con el dominio real de tu proyecto Railway cuando lo tengas
+    ALLOWED_HOSTS = ['tu-proyecto.railway.app']
 else:
     ALLOWED_HOSTS = ['*']
 
-# INSTALLED APPS
+# INSTALLED_APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -67,6 +68,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 # BASE DE DATOS
+# 1. Local (variables individuales)  
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -81,7 +83,7 @@ DATABASES = {
     }
 }
 
-# Usar DATABASE_URL de Railway si existe
+# 2. Producción (DATABASE_URL de Railway)
 if os.environ.get('DATABASE_URL'):
     DATABASES['default'] = dj_database_url.config(
         default=os.environ['DATABASE_URL'],
@@ -124,5 +126,4 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    # Evita errores CSRF con el dominio de Railway
     CSRF_TRUSTED_ORIGINS = ['https://tu-proyecto.railway.app']  # Cambia al dominio real
