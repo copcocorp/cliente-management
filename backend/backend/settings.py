@@ -20,7 +20,7 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 # ALLOWED_HOSTS
 if not DEBUG:
     # Producción: usar tu dominio real de Railway
-    ALLOWED_HOSTS = [os.environ.get('RAILWAY_DOMAIN', 'tu-proyecto.railway.app')]
+    ALLOWED_HOSTS = [os.environ.get('RAILWAY_DOMAIN', 'cliente-management-production.up.railway.app')]
 else:
     # Desarrollo: permitir todo
     ALLOWED_HOSTS = ['*']
@@ -131,4 +131,4 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     # Confianza en el dominio de Railway
-    CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('RAILWAY_DOMAIN', 'tu-proyecto.railway.app')}"]
+    CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('RAILWAY_DOMAIN', 'cliente-management-production.up.railway.app')}"]
