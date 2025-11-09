@@ -2,6 +2,10 @@ import os
 from pathlib import Path
 import dj_database_url
 import pymysql
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 # Hacemos que PyMySQL actúe como MySQLdb
 pymysql.install_as_MySQLdb()
@@ -13,14 +17,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-only')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# ALLOWED_HOSTS según entorno
+# ALLOWED_HOSTS
 if not DEBUG:
-    # Reemplaza con el dominio real de tu proyecto Railway cuando lo tengas
-    ALLOWED_HOSTS = ['tu-proyecto.railway.app']
+    # Producción: usar tu dominio real de Railway
+    ALLOWED_HOSTS = [os.environ.get('RAILWAY_DOMAIN', 'tu-proyecto.railway.app')]
 else:
+    # Desarrollo: permitir todo
     ALLOWED_HOSTS = ['*']
 
-# INSTALLED_APPS
+# INSTALLED APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -68,28 +73,28 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 # BASE DE DATOS
-# 1. Local (variables individuales)  
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME', 'clientes_db'),
-        'USER': os.environ.get('DB_USER', 'root'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '3306'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
+# Si existe DATABASE_URL, úsala (Railway o local)
+if os.environ.get('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.parse(
+            os.environ['DATABASE_URL'],
+            conn_max_age=600,
+            ssl_require=not DEBUG  # SSL solo en producción
+        )
+    }
+else:
+    # Configuración manual local
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('DB_NAME', 'clientes_db'),
+            'USER': os.environ.get('DB_USER', 'root'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', '3306'),
+            'OPTIONS': {'charset': 'utf8mb4'},
         }
     }
-}
-
-# 2. Producción (DATABASE_URL de Railway)
-if os.environ.get('DATABASE_URL'):
-    DATABASES['default'] = dj_database_url.config(
-        default=os.environ['DATABASE_URL'],
-        conn_max_age=600,
-        ssl_require=True
-    )
 
 # VALIDADORES DE CONTRASEÑA
 AUTH_PASSWORD_VALIDATORS = [
@@ -126,4 +131,5 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    CSRF_TRUSTED_ORIGINS = ['https://tu-proyecto.railway.app']  # Cambia al dominio real
+    # Confianza en el dominio de Railway
+    CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('RAILWAY_DOMAIN', 'tu-proyecto.railway.app')}"]
