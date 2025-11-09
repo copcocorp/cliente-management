@@ -78,8 +78,7 @@ if os.environ.get('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.parse(
             os.environ['DATABASE_URL'],
-            conn_max_age=600,
-            ssl_require=not DEBUG  # SSL solo en producción
+            conn_max_age=600
         )
     }
 else:
