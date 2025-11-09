@@ -56,27 +56,42 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 # CONFIGURACIÓN MYSQL PARA PRODUCCIÓN
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mysql.connector.django',
+#         'NAME': os.environ.get('MYSQLDATABASE', 'railway'),
+#         'USER': os.environ.get('MYSQLUSER', 'root'),
+#         'PASSWORD': os.environ.get('MYSQLPASSWORD', ''),
+#         'HOST': os.environ.get('MYSQLHOST', 'localhost'),
+#         'PORT': os.environ.get('MYSQLPORT', '3306'),
+#         'OPTIONS': {
+#             'charset': 'utf8mb4',
+#         }
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': os.environ.get('MYSQLDATABASE', 'railway'),
-        'USER': os.environ.get('MYSQLUSER', 'root'),
-        'PASSWORD': os.environ.get('MYSQLPASSWORD', ''),
-        'HOST': os.environ.get('MYSQLHOST', 'localhost'),
-        'PORT': os.environ.get('MYSQLPORT', '3306'),
+        'ENGINE': 'django.db.backends.mysql',  # CAMBIAR ESTO
+        'NAME': os.environ.get('DB_NAME', 'railway'),  # CAMBIAR MYSQLDATABASE por DB_NAME
+        'USER': os.environ.get('DB_USER', 'root'),     # CAMBIAR MYSQLUSER por DB_USER
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''), # CAMBIAR MYSQLPASSWORD por DB_PASSWORD
+        'HOST': os.environ.get('DB_HOST', 'localhost'), # CAMBIAR MYSQLHOST por DB_HOST
+        'PORT': os.environ.get('DB_PORT', '3306'),     # CAMBIAR MYSQLPORT por DB_PORT
         'OPTIONS': {
             'charset': 'utf8mb4',
         }
     }
 }
 
-# Si existe DATABASE_URL de Railway, usarla
-if os.environ.get('DATABASE_URL'):
-     DATABASES['default'] = dj_database_url.config(
-         conn_max_age=600,
-         conn_health_checks=True,
-         ssl_require=True
-     )
+
+# # Si existe DATABASE_URL de Railway, usarla
+# if os.environ.get('DATABASE_URL'):
+#      DATABASES['default'] = dj_database_url.config(
+#          conn_max_age=600,
+#          conn_health_checks=True,
+#          ssl_require=True
+#      )
 # if os.environ.get('DATABASE_URL'):
 #     db_config = dj_database_url.config(
 #         conn_max_age=600,
