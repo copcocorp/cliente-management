@@ -5,11 +5,13 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# SOLO esta redirección para SPAs
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
+# Headers de seguridad
 [[headers]]
   for = "/*"
   [headers.values]
