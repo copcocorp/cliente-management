@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 # Cargar variables de entorno desde .env
 load_dotenv()
 
-# Hacemos que PyMySQL actúe como MySQLdb
+# PyMySQL como MySQLdb
 pymysql.install_as_MySQLdb()
 
 # BASE_DIR
@@ -19,13 +19,14 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # ALLOWED_HOSTS
 if not DEBUG:
-    # Producción: usar tu dominio real de Railway
-    ALLOWED_HOSTS = [os.environ.get('RAILWAY_DOMAIN', 'cliente-management-production.up.railway.app')]
+    ALLOWED_HOSTS = [
+        os.environ.get('RAILWAY_DOMAIN', 'cliente-management-production.up.railway.app'),
+        'cliente-admin.netlify.app'
+    ]
 else:
-    # Desarrollo: permitir todo
     ALLOWED_HOSTS = ['*']
 
-# INSTALLED APPS
+# INSTALLED_APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -72,17 +73,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# BASE DE DATOS
-# Si existe DATABASE_URL, úsala (Railway o local)
+# DATABASES
 if os.environ.get('DATABASE_URL'):
     DATABASES = {
-        'default': dj_database_url.parse(
-            os.environ['DATABASE_URL'],
-            conn_max_age=600
-        )
+        'default': dj_database_url.parse(os.environ['DATABASE_URL'], conn_max_age=600)
     }
 else:
-    # Configuración manual local
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -95,7 +91,7 @@ else:
         }
     }
 
-# VALIDADORES DE CONTRASEÑA
+# PASSWORD VALIDATORS
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -103,7 +99,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# LOCALIZACIÓN
+# LOCALIZATION
 LANGUAGE_CODE = 'es-es'
 TIME_ZONE = 'UTC'
 USE_I18N = True
