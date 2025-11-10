@@ -118,8 +118,13 @@ REST_FRAMEWORK = {
 }
 
 # CORS
-CORS_ALLOW_ALL_ORIGINS = True
+#CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "https://mex-macaron-a27b2d.netlify.app",  # tu frontend en Netlify
+]
+
 CORS_ALLOW_CREDENTIALS = True
+
 
 # SEGURIDAD EN PRODUCCIÓN
 if not DEBUG:
