@@ -21,7 +21,7 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 if not DEBUG:
     ALLOWED_HOSTS = [
         os.environ.get('RAILWAY_DOMAIN', 'cliente-management-production.up.railway.app'),
-        'cliente-admin.netlify.app'
+        'cliente-administracion.netlify.app'
     ]
 else:
     ALLOWED_HOSTS = ['*']
@@ -120,10 +120,11 @@ REST_FRAMEWORK = {
 # CORS
 #CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    "https://mex-macaron-a27b2d.netlify.app",  # tu frontend en Netlify
+    "https://cliente-administracion.netlify.app",  # tu frontend en Netlify
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_REPLACE_HTTPS_REFERER = True
 
 
 # SEGURIDAD EN PRODUCCIÓN
@@ -134,5 +135,5 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     CSRF_TRUSTED_ORIGINS = [
         f"https://{os.environ.get('RAILWAY_DOMAIN')}",
-        "https://cliente-admin.netlify.app"
+        "https://cliente-administracion.netlify.app"
     ]
