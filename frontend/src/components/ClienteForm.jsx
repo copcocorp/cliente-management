@@ -19,19 +19,17 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
 
   useEffect(() => {
     if (cliente) {
-      // Formatear fecha para input type="date"
-      const formattedCliente = {
+      setFormData({
         ...cliente,
-        fecha_nacimiento: cliente.fecha_nacimiento.split('T')[0],
-        ingresos_anuales: cliente.ingresos_anuales || '',
-      };
-      setFormData(formattedCliente);
+        fecha_nacimiento: cliente.fecha_nacimiento ? cliente.fecha_nacimiento.split('T')[0] : '',
+        ingresos_anuales: cliente.ingresos_anuales ? cliente.ingresos_anuales : '',
+      });
     }
   }, [cliente]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
@@ -39,7 +37,12 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+    const payload = {
+      ...formData,
+      ingresos_anuales: formData.ingresos_anuales || null,
+      fecha_nacimiento: formData.fecha_nacimiento || null,
+    };
+    onSave(payload);
   };
 
   return (
@@ -49,14 +52,10 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
           <h2 className="text-2xl font-bold mb-4 text-gray-800">
             {cliente ? 'Editar Cliente' : 'Nuevo Cliente'}
           </h2>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Nombre */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nombre *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
                 <input
                   type="text"
                   name="nombre"
@@ -67,11 +66,8 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
                 />
               </div>
 
-              {/* Apellido */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Apellido *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Apellido *</label>
                 <input
                   type="text"
                   name="apellido"
@@ -82,11 +78,8 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
                 />
               </div>
 
-              {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                 <input
                   type="email"
                   name="email"
@@ -97,11 +90,8 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
                 />
               </div>
 
-              {/* Teléfono */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Teléfono
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
                 <input
                   type="tel"
                   name="telefono"
@@ -111,11 +101,8 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
                 />
               </div>
 
-              {/* Fecha de Nacimiento */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Fecha de Nacimiento
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
                 <input
                   type="date"
                   name="fecha_nacimiento"
@@ -125,11 +112,8 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
                 />
               </div>
 
-              {/* Tipo de Cliente */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tipo de Cliente
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Cliente</label>
                 <select
                   name="tipo_cliente"
                   value={formData.tipo_cliente}
@@ -142,11 +126,8 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
                 </select>
               </div>
 
-              {/* Estado Civil */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Estado Civil
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Estado Civil</label>
                 <select
                   name="estado_civil"
                   value={formData.estado_civil}
@@ -161,11 +142,8 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
                 </select>
               </div>
 
-              {/* Ingresos Anuales */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Ingresos Anuales
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Ingresos Anuales</label>
                 <input
                   type="number"
                   step="0.01"
@@ -175,28 +153,9 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-            </div>
 
-            {/* Dirección */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Dirección
-              </label>
-              <textarea
-                name="direccion"
-                value={formData.direccion}
-                onChange={handleChange}
-                rows="3"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Ciudad */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Ciudad
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Ciudad</label>
                 <input
                   type="text"
                   name="ciudad"
@@ -206,11 +165,8 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
                 />
               </div>
 
-              {/* Código Postal */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Código Postal
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Código Postal</label>
                 <input
                   type="text"
                   name="codigo_postal"
@@ -221,7 +177,17 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
               </div>
             </div>
 
-            {/* Activo */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+              <textarea
+                name="direccion"
+                value={formData.direccion}
+                onChange={handleChange}
+                rows="3"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -230,12 +196,9 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
                 onChange={handleChange}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label className="ml-2 block text-sm text-gray-700">
-                Cliente Activo
-              </label>
+              <label className="ml-2 block text-sm text-gray-700">Cliente Activo</label>
             </div>
 
-            {/* Botones */}
             <div className="flex justify-end space-x-3 pt-4">
               <button
                 type="button"
@@ -259,3 +222,4 @@ const ClienteForm = ({ cliente, onSave, onCancel }) => {
 };
 
 export default ClienteForm;
+

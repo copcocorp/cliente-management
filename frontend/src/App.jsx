@@ -14,8 +14,8 @@ function App() {
   const loadClientes = async () => {
     try {
       setLoading(true);
-      const response = await clientesAPI.getAll();
-      setClientes(response.data);
+      const clientesData = await clientesAPI.getAll();
+      setClientes(clientesData);
     } catch (error) {
       console.error('Error cargando clientes:', error);
       alert('Error al cargar los clientes');
@@ -36,7 +36,7 @@ function App() {
       } else {
         await clientesAPI.create(clienteData);
       }
-      await loadClientes();
+      await loadClientes(); // recargar la lista
       setShowForm(false);
       setClienteEdit(null);
     } catch (error) {
@@ -53,7 +53,7 @@ function App() {
 
   // Eliminar cliente
   const handleDelete = async (id) => {
-    if (confirm('¿Estás seguro de que quieres eliminar este cliente?')) {
+    if (window.confirm('¿Estás seguro de que quieres eliminar este cliente?')) {
       try {
         await clientesAPI.delete(id);
         await loadClientes();
@@ -73,9 +73,7 @@ function App() {
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-700">
-              Lista de Clientes
-            </h2>
+            <h2 className="text-xl font-semibold text-gray-700">Lista de Clientes</h2>
             <button
               onClick={() => {
                 setClienteEdit(null);
