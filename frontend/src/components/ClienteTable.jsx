@@ -1,8 +1,9 @@
 // src/components/ClienteTable.jsx
 import React from 'react';
 
-const ClienteTable = ({ clientes, onEdit, onDelete }) => {
+const ClienteTable = ({ clientes = [], onEdit, onDelete }) => {
   const formatDate = (dateString) => {
+    if (!dateString) return '-';
     return new Date(dateString).toLocaleDateString('es-ES');
   };
 
@@ -13,6 +14,12 @@ const ClienteTable = ({ clientes, onEdit, onDelete }) => {
       currency: 'EUR',
     }).format(amount);
   };
+
+  // 🔒 Asegurar que clientes sea un array
+  if (!Array.isArray(clientes)) {
+    console.warn('⚠️ clientes no es un array:', clientes);
+    clientes = [];
+  }
 
   return (
     <div className="overflow-x-auto">
@@ -71,7 +78,7 @@ const ClienteTable = ({ clientes, onEdit, onDelete }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                    {cliente.tipo_cliente}
+                    {cliente.tipo_cliente || '-'}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
