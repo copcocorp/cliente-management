@@ -9,9 +9,9 @@ const ClienteTable = ({ clientes = [], onEdit, onDelete }) => {
 
   const formatCurrency = (amount) => {
     if (!amount) return '-';
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat('es-MX', {
       style: 'currency',
-      currency: 'EUR',
+      currency: 'MXN',
     }).format(amount);
   };
 
